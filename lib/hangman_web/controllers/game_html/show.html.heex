@@ -1,34 +1,40 @@
 <div class="container mx-auto px-4 py-8">
-  <h1 class="text-4xl font-bold mb-8">Phoenix Hangman</h1>
+  <h1 class="text-4xl font-bold mb-8">Hangman</h1>
 
-  <div class="mb-8">
-    <p class="text-2xl font-mono"><%= Hangman.Game.word_so_far(@game) %></p>
-    <p class="mt-4">Remaining attempts: <%= @game.remaining_attempts %></p>
-    <p class="mt-2">Guessed letters: <%= @game.guessed_letters |> MapSet.to_list() |> Enum.join(", ") %></p>
-  </div>
-
-  <%= if Hangman.Game.game_over?(@game) do %>
-    <div class="mb-8">
-      <%= if Hangman.Game.won?(@game) do %>
-        <p class="text-green-600 font-bold">Congratulations! You won!</p>
-      <% else %>
-        <p class="text-red-600 font-bold">Game Over! The word was: <%= @game.word %></p>
-      <% end %>
-      
-      <.link href={~p"/game/new"} class="mt-4 inline-block bg-blue-500 text-white px-4 py-2 rounded">
-        New Game
-      </.link>
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+    <div>
+      <.hangman remaining_attempts={@game.remaining_attempts} />
     </div>
-  <% else %>
-    <.form :let={f} for={%{}} action={~p"/game"} method="post">
-      <div class="flex gap-4">
-        <input type="text" name="guess" maxlength="1" required
-               class="border rounded px-2 py-1 w-16 text-center"
-               placeholder="a-z">
-        <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded">
-          Guess
-        </button>
-      </div>
-    </.form>
-  <% end %>
+
+    <div>
+      <p class="text-2xl font-mono"><%= Hangman.Game.word_so_far(@game) %></p>
+      <p class="mt-4">Remaining attempts: <%= @game.remaining_attempts %></p>
+      <p class="mt-2">Guessed letters: <%= @game.guessed_letters |> MapSet.to_list() |> Enum.join(", ") %></p>
+
+      <%= if Hangman.Game.game_over?(@game) do %>
+        <div class="mt-8">
+          <%= if Hangman.Game.won?(@game) do %>
+            <p class="text-green-600 font-bold">Congratulations! You won!</p>
+          <% else %>
+            <p class="text-red-600 font-bold">Game Over! The word was: <%= @game.word %></p>
+          <% end %>
+          
+          <.link href={~p"/game/new"} class="mt-4 inline-block bg-blue-500 text-white px-4 py-2 rounded">
+            New Game
+          </.link>
+        </div>
+      <% else %>
+        <.form for={%{}} action={~p"/game"} method="post" class="mt-8">
+          <div class="flex gap-4">
+            <input type="text" name="guess" maxlength="1" required
+                   class="border rounded px-2 py-1 w-16 text-center"
+                   placeholder="a-z">
+            <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded">
+              Guess
+            </button>
+          </div>
+        </.form>
+      <% end %>
+    </div>
+  </div>
 </div>
